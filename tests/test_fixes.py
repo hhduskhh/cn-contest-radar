@@ -459,5 +459,26 @@ class EditionMergeTest(TempDbTest):
         self.assertEqual(self._row()["region"], "other")
 
 
+class ConnectionPragmaTest(TempDbTest):
+    """缺陷 7：synchronous 是连接级设置，必须每条连接都设。"""
+
+    # PRAGMA synchronous 的取值：0=OFF 1=NORMAL 2=FULL 3=EXTRA
+    NORMAL = 1
+
+    def test_get_conn_is_normal(self) -> None:
+        with db.get_conn() as conn:
+            self.assertEqual(conn.execute("PRAGMA synchronous").fetchone()[0], self.NORMAL)
+
+    def test_fresh_connection_is_normal(self) -> None:
+        """爬虫/调度器走 connect()，不是 get_conn()。"""
+        conn = db.connect()
+        try:
+            self.assertEqual(conn.execute("PRAGMA synchronous").fetchone()[0], self.NORMAL)
+            # WAL 是持久的，init_db() 设过一次之后每条连接都该看到它
+            self.assertEqual(conn.execute("PRAGMA journal_mode").fetchone()[0], "wal")
+        finally:
+            conn.close()
+
+
 if __name__ == "__main__":
     unittest.main()

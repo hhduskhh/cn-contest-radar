@@ -22,10 +22,15 @@ def connect() -> sqlite3.Connection:
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys=ON")
     conn.execute("PRAGMA busy_timeout=15000")
+    # synchronous 是**连接级**设置。写在 init_db() 里只对那一条连接生效，
+    # 爬虫、调度器、网页各自新开的连接仍是默认的 FULL —— 每次 commit 都 fsync，
+    # 而爬虫是每条记录一提交。WAL 下 NORMAL 足够安全（只有断电才可能丢最后
+    # 几个事务，缓存型数据库重爬即可），所以每条连接都设一遍。
+    conn.execute("PRAGMA synchronous=NORMAL")
     # 注意：**不要**在这里执行 PRAGMA journal_mode=WAL。
     # 它是数据库级持久设置，但每次执行都需要短暂独占锁 —— 多个爬虫线程
     # 并发建连接时会互相抢锁，直接报 "database is locked"。
-    # WAL 只在 init_db() 里设一次。
+    # 好在它是持久的：WAL 只在 init_db() 里设一次，之后所有连接都享受。
     return conn
 
 
@@ -50,11 +55,8 @@ def init_db() -> None:
     with get_conn() as conn:
         # WAL 让调度器写入与网页读取不互斥。数据库级持久设置，设一次即可 ——
         # 放在这里而不是 connect()，是因为它需要独占锁。
+        # （synchronous 相反：连接级、非持久，已挪到 connect() 里逐条设置。）
         conn.execute("PRAGMA journal_mode=WAL")
-        # WAL 下 NORMAL 是安全的：只有断电才可能丢最后几个事务，
-        # 而这是缓存型数据库，重爬即可。换来的是提交时不做 fsync ——
-        # 爬虫每个条目都提交，这个差别很大。
-        conn.execute("PRAGMA synchronous=NORMAL")
         conn.executescript(schema)
 
 
