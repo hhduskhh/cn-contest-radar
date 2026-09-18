@@ -66,6 +66,29 @@ class XfyunCrawler(BaseCrawler):
         for item in items:
             yield item, self.title_of(item), self.url_of(item)
 
+    def _fetch_authenticated(self, headers: dict[str, str] | None = None) -> list:
+        """带上凭据拉一次全量列表。供 /api/admin/credential/xfyun/verify 使用。
+
+        headers 直接就是 requests 的请求头字典 —— credentials.cookie_header()
+        返回的是 {"Cookie": "..."}。
+
+        注意口径：讯飞的赛题列表接口本身是公开的（见模块开头），所以这一步能验证的
+        是"带上这个 Cookie 请求还通不通"，取到数据不等于登录态有效。
+        接口用 {flag, code, desc} 报错，flag=false 时把 desc 抛出去 ——
+        Cookie 被拒时那是唯一的线索。
+        """
+        data = self.http.get_json(_ENDPOINT, headers=headers or None)
+        if not isinstance(data, dict):
+            raise SourceStructureError(f"讯飞接口返回结构异常：{str(data)[:200]}")
+        if data.get("flag") is False:
+            raise RuntimeError(
+                f"讯飞接口拒绝：code={data.get('code')} desc={data.get('desc')}"
+            )
+        items = data.get("data") or []
+        if not isinstance(items, list):
+            raise SourceStructureError(f"讯飞接口返回结构异常：{str(data)[:200]}")
+        return items
+
     def external_id_of(self, payload: Any) -> str:
         # contest_name 实际存的是数字 ID
         for key in ("contest_name", "contest_flag"):

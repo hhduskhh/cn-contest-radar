@@ -78,8 +78,15 @@ def verify_credential(source_key: str):
         items = crawler._fetch_authenticated(credentials.cookie_header(source_key))
     except Exception as exc:  # noqa: BLE001
         return {"valid": False, "message": str(exc)[:300]}
+
+    # 讯飞的赛题列表接口是公开的，所以"取到数据"只说明带上这个 Cookie 请求是通的，
+    # 不足以断定登录态有效 —— 别在提示里把话说满。
     return {
         "valid": bool(items),
         "items": len(items),
-        "message": "Cookie 有效" if items else "Cookie 已配置，但接口未返回数据",
+        "message": (
+            f"请求成功，接口返回 {len(items)} 条（该接口本身公开，不足以证明登录态有效）"
+            if items
+            else "Cookie 已配置，但接口未返回数据"
+        ),
     }

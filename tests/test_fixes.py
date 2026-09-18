@@ -10,6 +10,7 @@
 
 from __future__ import annotations
 
+import json
 import sys
 import tempfile
 import threading
@@ -20,9 +21,10 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from app import config, db  # noqa: E402
+from app.api.routes_admin import verify_credential  # noqa: E402
 from app.api.routes_events import upcoming  # noqa: E402
 from app.api.serialize import edition_to_dict  # noqa: E402
-from app.crawlers import ensure_registered  # noqa: E402
+from app.crawlers import ensure_registered, xfyun  # noqa: E402
 from app.crawlers.base import BaseCrawler  # noqa: E402
 from app.crawlers.guards import SourceStructureError, expect_first_page  # noqa: E402
 from app.models import EditionDraft  # noqa: E402
@@ -478,6 +480,78 @@ class ConnectionPragmaTest(TempDbTest):
             self.assertEqual(conn.execute("PRAGMA journal_mode").fetchone()[0], "wal")
         finally:
             conn.close()
+
+
+class _RecordingHttp:
+    """记录最后一次请求，返回固定 payload。"""
+
+    def __init__(self, payload) -> None:
+        self.payload = payload
+        self.last_url: str | None = None
+        self.last_headers: dict | None = None
+
+    def get_json(self, url, **kwargs):
+        self.last_url = url
+        self.last_headers = kwargs.get("headers")
+        return self.payload
+
+
+class XfyunVerifyTest(unittest.TestCase):
+    """缺陷 8：verify 接口调的 _fetch_authenticated 在 XfyunCrawler 上不存在。
+
+    修复前该调用抛 AttributeError，被 except 兜住当成"Cookie 无效"返回，
+    永远是 valid:false、提示还是 Python 的报错原文。
+    """
+
+    def setUp(self) -> None:
+        self._tmp = tempfile.TemporaryDirectory()
+        self._orig_runtime_path = config.RUNTIME_PATH
+        config.RUNTIME_PATH = Path(self._tmp.name) / "runtime.json"
+        config.RUNTIME_PATH.write_text(
+            json.dumps(
+                {"cookies": {"xfyun": {"value": "a=1; b=2", "updated_at": "2026-09-18T00:00:00Z"}}}
+            ),
+            encoding="utf-8",
+        )
+
+        self.crawler = xfyun.XfyunCrawler()
+        self._orig_class = xfyun.XfyunCrawler
+        xfyun.XfyunCrawler = lambda: self.crawler  # type: ignore[assignment]  # 路由里现 import 的
+
+    def tearDown(self) -> None:
+        xfyun.XfyunCrawler = self._orig_class  # type: ignore[assignment]
+        config.RUNTIME_PATH = self._orig_runtime_path
+        self._tmp.cleanup()
+
+    def test_cookie_header_is_passed_through(self) -> None:
+        http = _RecordingHttp({"flag": True, "data": [{"contest_name": "1"}, {"contest_name": "2"}]})
+        self.crawler.http = http
+
+        result = verify_credential("xfyun")
+
+        self.assertTrue(result["valid"])
+        self.assertEqual(result["items"], 2)
+        # credentials.cookie_header() 给的是 dict，不是 Cookie 字符串
+        self.assertEqual(http.last_headers, {"Cookie": "a=1; b=2"})
+        self.assertEqual(http.last_url, xfyun._ENDPOINT)
+
+    def test_rejected_request_is_reported(self) -> None:
+        self.crawler.http = _RecordingHttp(
+            {"flag": False, "code": 80000, "desc": "登录已过期"}
+        )
+
+        result = verify_credential("xfyun")
+
+        self.assertFalse(result["valid"])
+        self.assertIn("登录已过期", result["message"])
+
+    def test_empty_result_is_not_reported_as_valid(self) -> None:
+        self.crawler.http = _RecordingHttp({"flag": True, "data": []})
+
+        result = verify_credential("xfyun")
+
+        self.assertFalse(result["valid"])
+        self.assertIn("未返回数据", result["message"])
 
 
 if __name__ == "__main__":
