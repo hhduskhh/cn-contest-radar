@@ -26,7 +26,7 @@ from app.crawlers import ensure_registered  # noqa: E402
 from app.crawlers.base import BaseCrawler  # noqa: E402
 from app.crawlers.guards import SourceStructureError, expect_first_page  # noqa: E402
 from app.models import EditionDraft  # noqa: E402
-from app.pipeline import normalize, persist, runner  # noqa: E402
+from app.pipeline import events_catalog, normalize, persist, runner  # noqa: E402
 from app.pipeline.status import effective_status  # noqa: E402
 
 
@@ -356,6 +356,107 @@ class DeriveStatusTest(unittest.TestCase):
             contest_end=datetime(2020, 1, 1, tzinfo=timezone.utc),
         )
         self.assertEqual(persist.derive_status(draft, now=self.NOW), "running")
+
+
+class EditionMergeTest(TempDbTest):
+    """缺陷 6：同一届次被同源的多次解析先后写入时，低置信度不能覆盖高置信度。"""
+
+    def setUp(self) -> None:
+        super().setUp()
+        self._saved_catalog = events_catalog._catalog
+        with db.get_conn() as conn:
+            conn.execute(
+                "INSERT INTO events (id, slug, name, category)"
+                " VALUES (1, 'demo', '演示赛', 'algorithm')"
+            )
+        events_catalog.reload_catalog()
+
+    def tearDown(self) -> None:
+        events_catalog._catalog = self._saved_catalog
+        super().tearDown()
+
+    def _write(self, *, origin: str = "crawl", **draft_fields) -> None:
+        """按同一唯一键写一条届次（source_key/sub_event/year 固定）。"""
+        draft = EditionDraft(event_slug="demo", year=2026, **draft_fields)
+        with db.get_conn() as conn:
+            persist.upsert_edition(
+                conn,
+                draft,
+                source_key="demo",
+                source_item_id=None,
+                source_url=None,
+                origin=origin,
+            )
+
+    def _row(self) -> dict:
+        rows = self.query("SELECT * FROM event_editions")
+        self.assertEqual(len(rows), 1)
+        return rows[0]
+
+    def test_low_confidence_does_not_downgrade_high(self) -> None:
+        self._write(
+            time_confidence="high",
+            time_precision="second",
+            contest_start=datetime(2026, 5, 1, tzinfo=timezone.utc),
+            contest_end=datetime(2026, 5, 3, tzinfo=timezone.utc),
+        )
+        # 同一届次的另一条通知：正则一条时间都没抽到，置信度 low
+        self._write(time_confidence="low")
+
+        row = self._row()
+        self.assertEqual(row["time_confidence"], "high")
+        self.assertEqual(row["time_precision"], "second")
+        self.assertEqual(row["contest_start"], "2026-05-01T00:00:00Z")
+
+    def test_higher_confidence_still_updates(self) -> None:
+        """只升不降不等于不更新：更高置信度的解析照常覆盖。"""
+        self._write(
+            time_confidence="low",
+            contest_start=datetime(2026, 5, 1, tzinfo=timezone.utc),
+        )
+        self._write(
+            time_confidence="high",
+            time_precision="second",
+            contest_start=datetime(2026, 6, 1, tzinfo=timezone.utc),
+        )
+
+        row = self._row()
+        self.assertEqual(row["time_confidence"], "high")
+        self.assertEqual(row["time_precision"], "second")
+        self.assertEqual(row["contest_start"], "2026-06-01T00:00:00Z")
+
+    def test_low_confidence_can_still_fill_missing_time(self) -> None:
+        """合并仍按字段走：高置信度没给出的时间，低置信度的可以补上。"""
+        self._write(
+            time_confidence="high",
+            contest_start=datetime(2026, 5, 1, tzinfo=timezone.utc),
+        )
+        self._write(
+            time_confidence="low",
+            registration_end=datetime(2026, 4, 1, tzinfo=timezone.utc),
+        )
+
+        row = self._row()
+        self.assertEqual(row["registration_end"], "2026-04-01T00:00:00Z")
+        self.assertEqual(row["time_confidence"], "high")
+
+    def test_region_not_downgraded_to_online(self) -> None:
+        self._write(
+            region="guangdong",
+            contest_start=datetime(2026, 5, 1, tzinfo=timezone.utc),
+        )
+        # 后一条通知的赛站没认出来，落到兜底值 online
+        self._write(
+            region="online",
+            contest_start=datetime(2026, 5, 1, tzinfo=timezone.utc),
+        )
+        self.assertEqual(self._row()["region"], "guangdong")
+
+    def test_region_updates_to_concrete_value(self) -> None:
+        """真判出了别的赛站还是要更新，不能一律守着旧值。"""
+        self._write(region="online", contest_start=datetime(2026, 5, 1, tzinfo=timezone.utc))
+        self._write(region="other", contest_start=datetime(2026, 5, 1, tzinfo=timezone.utc))
+        self.assertEqual(self._row()["region"], "other")
 
 
 if __name__ == "__main__":

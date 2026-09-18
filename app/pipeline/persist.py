@@ -23,6 +23,14 @@ from .status import derive_status_from_iso
 
 log = logging.getLogger(__name__)
 
+# 置信度只升不降。它描述的是库里那几个时间是"可靠到什么程度"来的，
+# 所以必须跟时间一起合并，不能单独被一次更差的解析改写。
+_CONFIDENCE_RANK = {"high": 3, "medium": 2, "low": 1}
+
+
+def _rank(confidence: str | None) -> int:
+    return _CONFIDENCE_RANK.get(confidence or "", 0)
+
 
 def content_hash(item: RawItem) -> str:
     """对影响展示的关键字段做哈希。raw_json 里的噪音字段（pv、点击量）不参与。"""
@@ -181,9 +189,25 @@ def upsert_edition(
 
     # 时间字段逐个合并：新值非空才覆盖，避免一次解析失败把已有时间抹掉
     merged = dict(values)
+    provided_time = False
     for field in ("registration_start", "registration_end", "contest_start", "contest_end"):
         if merged[field] is None:
             merged[field] = existing[field]
+        else:
+            provided_time = True
+
+    # 置信度与精度跟着时间走，同样要合并：
+    #   - 这次一条时间都没提供 → 没资格改写已有时间的置信度标注
+    #   - 这次置信度更低 → 不能把已有的 high 降级
+    #     （同一条届次可能先由官方赛程表写 high，后被某条通知的正则抽成 low）
+    if not provided_time or _rank(merged["time_confidence"]) < _rank(existing["time_confidence"]):
+        merged["time_confidence"] = existing["time_confidence"]
+        merged["time_precision"] = existing["time_precision"]
+
+    # 地域同理：online 的含义是"这次没找到举办地"，不是新信息，
+    # 不该冲掉已经判出来的线下赛站（guangdong/other）。
+    if merged["region"] == "online" and existing["region"] != "online":
+        merged["region"] = existing["region"]
 
     # 人工条目的置信度不应被爬取结果拉低
     if origin == "manual":
