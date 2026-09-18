@@ -1,0 +1,181 @@
+[
+  {
+    "slug": "lanqiao",
+    "name": "蓝桥杯全国软件和信息技术专业人才大赛",
+    "category": "algorithm",
+    "organizer": "工业和信息化部人才交流中心",
+    "official_url": "https://dasai.lanqiao.cn/",
+    "description": "国内参与人数最多的程序设计类赛事，分省赛与国赛两阶段，每年 10 月前后报名、次年 4 月省赛。",
+    "aliases": [
+      "蓝桥杯",
+      "蓝桥"
+    ],
+    "series": true
+  },
+  {
+    "slug": "ccpc",
+    "name": "CCPC 中国大学生程序设计竞赛",
+    "category": "algorithm",
+    "organizer": "中国大学生程序设计竞赛组委会",
+    "official_url": "https://ccpc.io/",
+    "description": "国内顶级团体程序设计竞赛，含网络预选赛与各分站赛，通常 9 月网络赛、10-11 月分站赛。",
+    "aliases": [
+      "CCPC",
+      "中国大学生程序设计竞赛"
+    ],
+    "series": true
+  },
+  {
+    "slug": "matiji",
+    "name": "码蹄杯全国大学生程序设计大赛",
+    "category": "algorithm",
+    "organizer": "码蹄集",
+    "official_url": "https://www.matiji.net/matibei",
+    "description": "面向高校学生的程序设计赛事。注：官网数据需登录，本站该赛事信息以人工整理的历年数据为准。",
+    "aliases": [
+      "码蹄杯",
+      "马蹄杯",
+      "码蹄"
+    ],
+    "series": true
+  },
+  {
+    "slug": "icpc",
+    "name": "ICPC 国际大学生程序设计竞赛（亚洲区域赛）",
+    "category": "algorithm",
+    "organizer": "ICPC Asia 北京总部",
+    "official_url": "https://icpc.pku.edu.cn/",
+    "description": "国际顶级程序设计竞赛的亚洲区赛事，含各区域站与 EC-Final。",
+    "aliases": [
+      "ICPC",
+      "国际大学生程序设计竞赛",
+      "亚洲区域赛"
+    ],
+    "series": true
+  },
+  {
+    "slug": "gplt",
+    "name": "团体程序设计天梯赛",
+    "category": "algorithm",
+    "organizer": "全国高等学校计算机教育研究会",
+    "official_url": "https://gplt.patest.cn/",
+    "description": "以高校为单位组队的团体程序设计赛事，通常每年 4 月举办。",
+    "aliases": [
+      "天梯赛",
+      "团体程序设计天梯赛",
+      "GPLT"
+    ],
+    "series": true
+  },
+  {
+    "slug": "tianchi",
+    "name": "天池大数据竞赛",
+    "category": "ai",
+    "organizer": "阿里巴巴",
+    "official_url": "https://tianchi.aliyun.com/competition",
+    "description": "阿里旗下算法竞赛平台，覆盖机器学习、大模型、CV/NLP 等方向，赛事数量多、更新频繁。",
+    "aliases": [
+      "天池",
+      "天池大数据"
+    ],
+    "series": false
+  },
+  {
+    "slug": "xfyun",
+    "name": "讯飞 AI 开发者大赛",
+    "category": "ai",
+    "organizer": "科大讯飞",
+    "official_url": "https://challenge.xfyun.cn/",
+    "description": "科大讯飞主办的 AI 算法与应用赛事，含算法赛、应用赛、高校赛等多个赛道。",
+    "aliases": [
+      "讯飞",
+      "iFLYTEK",
+      "讯飞开放平台"
+    ],
+    "series": false
+  },
+  {
+    "slug": "aistudio",
+    "name": "百度飞桨 AI Studio 竞赛",
+    "category": "ai",
+    "organizer": "百度飞桨",
+    "official_url": "https://aistudio.baidu.com/competition",
+    "description": "百度飞桨平台的 AI 竞赛，覆盖 CV、NLP、大模型应用等方向。",
+    "aliases": [
+      "AI Studio",
+      "飞桨",
+      "百度飞桨"
+    ],
+    "series": false
+  },
+  {
+    "slug": "datafountain",
+    "name": "DataFountain 数据竞技平台 / CCF BDCI",
+    "category": "bigdata",
+    "organizer": "CCF 中国计算机学会",
+    "official_url": "https://www.datafountain.cn/competitions",
+    "description": "CCF 大数据与计算智能大赛（BDCI）官方平台，国内大数据方向标杆赛事。",
+    "aliases": [
+      "DataFountain",
+      "BDCI",
+      "CCF大数据",
+      "大数据与计算智能"
+    ],
+    "series": false
+  },
+  {
+    "slug": "bdc",
+    "name": "中国高校计算机大赛-大数据挑战赛",
+    "category": "bigdata",
+    "organizer": "教育部高等学校计算机类专业教学指导委员会 / 清华大学",
+    "official_url": "https://nercbds.tsinghua.edu.cn/bdc.html",
+    "description": "中国高校计算机大赛系列赛事之一，由清华大学承办，在和鲸平台线上进行。",
+    "aliases": [
+      "大数据挑战赛",
+      "中国高校计算机大赛"
+    ],
+    "series": true
+  },
+  {
+    "slug": "heywhale",
+    "name": "和鲸 Heywhale 数据科学竞赛",
+    "category": "bigdata",
+    "organizer": "和鲸科技",
+    "official_url": "https://www.heywhale.com/home/competition",
+    "description": "数据科学竞赛与实训平台，承办中国高校计算机大赛-大数据挑战赛等赛事。",
+    "aliases": [
+      "和鲸",
+      "Heywhale",
+      "科赛"
+    ],
+    "series": false
+  },
+  {
+    "slug": "raicom",
+    "name": "睿抗机器人开发者大赛（RAICOM）",
+    "category": "robotics",
+    "organizer": "工业和信息化部人才交流中心",
+    "official_url": "https://www.raicom.com.cn/",
+    "description": "面向机器人开发者的赛事，含多个赛项与赛道。",
+    "aliases": [
+      "睿抗",
+      "RAICOM",
+      "睿抗机器人"
+    ],
+    "series": true
+  },
+  {
+    "slug": "jsjds4c",
+    "name": "中国大学生计算机设计大赛（4C）",
+    "category": "design",
+    "organizer": "教育部高等学校计算机类专业教学指导委员会",
+    "official_url": "http://jsjds.blcu.edu.cn/",
+    "description": "含人工智能应用、数媒设计等多个大类，按校级赛-省级赛-国赛三级推进。",
+    "aliases": [
+      "计算机设计大赛",
+      "4C",
+      "中国大学生计算机设计大赛"
+    ],
+    "series": true
+  }
+]

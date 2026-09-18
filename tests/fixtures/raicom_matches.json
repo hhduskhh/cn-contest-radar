@@ -1,0 +1,33 @@
+{
+	"alertMsg":"操作成功",
+	"code":0,
+	"data":[
+		{
+			"allowCheckCertificate":false,
+			"bannerpicname":"",
+			"bannerpicpath":"",
+			"created":1772698965000,
+			"createrid":15,
+			"delsign":"0",
+			"detail":"<p><span style=\"background-color: rgba(248, 248, 248, 0.275); color: #5f5f5f; font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', Tahoma, Arial, sans-serif; font-size: 14px; text-align: -webkit-center; text-wrap-mode: nowrap;\">2026年睿抗机器人开发者大赛（RAICOM）</span></p>",
+			"enrollenddate":1795968000000,
+			"enrollstartdate":1773936000000,
+			"id":99,
+			"introduceid":0,
+			"matchname":"2026睿抗机器人开发者大赛（RAICOM）",
+			"matchpicname":"191b8b7930ffcceaa9db1c7b89e604e8.png",
+			"matchpicpath":"https://raicom-caia1caim2.oss-cn-hangzhou.aliyuncs.com/97beb9be3f9c459f9fa95cb1d9900f72.png",
+			"matchtype":"0",
+			"modified":null,
+			"modifierid":0,
+			"needMatchCode":false,
+			"noticeid":0,
+			"publishstatus":"1",
+			"status":0,
+			"worksCompetition":[]
+		}
+	],
+	"lang":"CN",
+	"statusCode":200,
+	"success":true
+}

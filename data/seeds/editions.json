@@ -1,0 +1,451 @@
+[
+  {
+    "event_slug": "lanqiao", "year": 2021, "sub_event": "",
+    "registration_start": "2020-11-30", "registration_end": "2021-03-12",
+    "contest_start": "2021-04-18", "contest_end": "2021-06-05",
+    "registration_raw": "2020-11-30 起报名，2021-03-12 截止",
+    "contest_raw": "省赛 2021-04-18 9:00-13:00；国赛 2021-06-05",
+    "time_confidence": "medium",
+    "source_url": "https://ie.wh.sdu.edu.cn/jdxxold/info/1031/2882.htm",
+    "source_note": "第十二届。日期来自高校转发的官方通知，仅精确到日。"
+  },
+  {
+    "event_slug": "lanqiao", "year": 2022, "sub_event": "",
+    "registration_start": "2021-10-12", "registration_end": "2021-12-17",
+    "contest_start": "2022-04-09", "contest_end": "2022-06-18",
+    "registration_raw": "2021-10-12 起报名，2021-12-17 截止",
+    "contest_raw": "省赛 2022-04-09 9:00-13:00；国赛 2022-06-18",
+    "time_confidence": "medium",
+    "source_url": "https://www.hnit.edu.cn/jsjxy/info/1003/3475.htm",
+    "source_note": "第十三届。省赛时间见官方《第十三届蓝桥杯大赛个人赛省赛比赛时间的通知》。"
+  },
+  {
+    "event_slug": "lanqiao", "year": 2023, "sub_event": "",
+    "registration_start": "2022-10-10", "registration_end": "2022-12-16",
+    "contest_start": "2023-04-08", "contest_end": "2023-06-10",
+    "registration_raw": "2022-10-10 起报名，2022-12-16 截止",
+    "contest_raw": "省赛 2023-04-08；国赛 2023-06-10",
+    "time_confidence": "medium",
+    "source_url": "https://www.lanqiao.cn/cup-fourteen/",
+    "source_note": "第十四届。官方回顾页写「2022 年 10 月启动报名，2023 年 7 月结束」。"
+  },
+  {
+    "event_slug": "lanqiao", "year": 2024, "sub_event": "",
+    "registration_start": "2023-10-07", "registration_end": "2023-12-15",
+    "contest_start": "2024-04-13", "contest_end": "2024-06-01",
+    "registration_raw": "2023-10-07 起报名，2023-12-15 截止（设计赛等赛项延至 2024-03-29）",
+    "contest_raw": "省赛 2024-04-13（软件赛 9:00-13:00，电子赛 9:00-14:00）；国赛 2024-06-01",
+    "time_confidence": "medium",
+    "source_url": "https://dasai.lanqiao.cn/notices/1568/",
+    "source_note": "第十五届。省赛时间来自官方通知（2023-12-20 发布）。"
+  },
+  {
+    "event_slug": "lanqiao", "year": 2025, "sub_event": "",
+    "registration_start": "2024-10-01", "registration_end": "2024-12-13",
+    "contest_start": "2025-04-12", "contest_end": "2025-06-15",
+    "registration_raw": "2024 年 10 月启动报名，2024-12-13 截止（部分省份写 12-15）",
+    "contest_raw": "省赛分三个比赛日：2025-04-12、04-13、04-26；国赛 2025-06-15（部分赛项 06-21）",
+    "time_confidence": "medium",
+    "source_url": "https://www.lanqiao.cn/cup-sixteen/",
+    "source_note": "第十六届。报名开始日官方只写「10 月」，此处填 10-01 为占位，请以官方通知为准。"
+  },
+  {
+    "event_slug": "lanqiao", "year": 2026, "sub_event": "",
+    "registration_start": "2025-10-20", "registration_end": "2025-12-15",
+    "contest_start": "2026-04-11", "contest_end": "2026-06-06",
+    "registration_raw": "2025-10-20 10:00 起，2025-12-15 14:00 截止（软件赛/电子赛/人工智能赛）",
+    "contest_raw": "省赛 2026-04-11（C/C++）、04-12（Java、Python、电子类）；国赛 2026-06-06",
+    "time_confidence": "medium",
+    "source_url": "https://jiaowu.nwpu.edu.cn/info/1164/25808.htm",
+    "source_note": "第十七届。注意本届起官方名称改为「蓝桥杯全国大学生软件和信息技术大赛」。部分省份报名延至 2026-03-10。"
+  },
+
+  {
+    "event_slug": "gplt", "year": 2021, "sub_event": "",
+    "registration_start": "2021-02-10", "registration_end": "2021-03-28",
+    "contest_start": "2021-04-24", "contest_end": "2021-04-24",
+    "registration_raw": "2021-02-10 开启报名，2021-03-28 截止",
+    "contest_raw": "2021-04-24 13:30-16:30",
+    "time_confidence": "medium",
+    "source_url": "https://ai.wzu.edu.cn/info/1339/8276.htm",
+    "source_note": "第六届。报名开始日来自高校转发通知，为次级来源。"
+  },
+  {
+    "event_slug": "gplt", "year": 2022, "sub_event": "",
+    "registration_end": "2022-03-27",
+    "contest_start": "2022-04-23", "contest_end": "2022-04-23",
+    "registration_raw": "报名及缴费截止 2022-03-27（开始日未找到）",
+    "contest_raw": "2022-04-23 13:30-16:30",
+    "time_confidence": "medium",
+    "source_url": "https://ccec.nefu.edu.cn/info/1175/2546.htm",
+    "source_note": "第七届。仅找到截止日与比赛日，报名开始日未找到。"
+  },
+  {
+    "event_slug": "gplt", "year": 2023, "sub_event": "",
+    "registration_end": "2023-03-26",
+    "contest_start": "2023-04-22", "contest_end": "2023-04-22",
+    "registration_raw": "报名截止 2023-03-26（开始日未找到）",
+    "contest_raw": "2023-04-22 13:30-16:30",
+    "time_confidence": "medium",
+    "source_url": "https://xkjs.xhu.edu.cn/ea/ef/c6093a191215/page.htm",
+    "source_note": "第八届。仅找到截止日与比赛日。"
+  },
+  {
+    "event_slug": "gplt", "year": 2024, "sub_event": "",
+    "registration_start": "2023-11-20", "registration_end": "2024-03-24",
+    "contest_start": "2024-04-20", "contest_end": "2024-04-20",
+    "registration_raw": "2023-11-20 开启报名（含缴费），2024-03-24 截止",
+    "contest_raw": "2024-04-20 13:30-16:30",
+    "time_confidence": "medium",
+    "source_url": "http://xkjs.xhu.edu.cn/25/5c/c6093a206172/page.htm",
+    "source_note": "第九届。"
+  },
+  {
+    "event_slug": "gplt", "year": 2025, "sub_event": "",
+    "registration_start": "2024-11-20", "registration_end": "2025-03-23",
+    "contest_start": "2025-04-19", "contest_end": "2025-04-19",
+    "registration_raw": "2024-11-20 开启报名，2025-03-23 截止",
+    "contest_raw": "2025-04-19 13:30-16:30",
+    "time_confidence": "medium",
+    "source_url": "https://www.scuec.edu.cn/jky/info/1143/5308.htm",
+    "source_note": "第十届。"
+  },
+  {
+    "event_slug": "gplt", "year": 2026, "sub_event": "",
+    "registration_start": "2025-11-20", "registration_end": "2026-03-22",
+    "contest_start": "2026-04-18", "contest_end": "2026-04-18",
+    "registration_raw": "2025-11-20 开启报名，2026-03-22 截止",
+    "contest_raw": "2026-04-18（各校通知 12:30-16:30 或 13:30-16:30）；赛前模拟赛 2026-04-11",
+    "time_confidence": "medium",
+    "source_url": "https://ccst.jlu.edu.cn/info/1056/20842.htm",
+    "source_note": "第十一届。另新增「天梯普及赛」个人赛：2026-03-14，报名截止 2026-03-07。"
+  },
+
+  {
+    "event_slug": "matiji", "year": 2022, "sub_event": "",
+    "contest_start": "2022-06-26", "contest_end": "2022-08-21",
+    "contest_raw": "初赛 6-26、7-10、7-24、8-07、8-21（各场 9:00-12:00）；复赛 9-10 月；决赛 11 月",
+    "time_confidence": "medium",
+    "source_url": "https://www2.tech.net.cn/upload/202206/26/202206261158527846.pdf",
+    "source_note": "官方赛程 PDF。该赛事无统一报名截止，官方口径为「即日起报名，截止到每场初赛开赛前 1 小时」。"
+  },
+  {
+    "event_slug": "matiji", "year": 2024, "sub_event": "",
+    "contest_start": "2024-06-22", "contest_end": "2024-07-25",
+    "contest_raw": "本科院校赛道初赛 2024-06-22 14:00-17:00；决赛 2024-07-25（线上）",
+    "time_confidence": "medium",
+    "source_url": "https://www.swpu.edu.cn/scs/content.jsp?urltype=news.NewsContentUrl&wbtreeid=1335&wbnewsid=7786",
+    "source_note": "第六届。职业院校赛道初赛为 6-01、6-15、6-29。有来源称决赛为 7-14，存疑。"
+  },
+  {
+    "event_slug": "matiji", "year": 2025, "sub_event": "",
+    "registration_start": "2025-04-02", "registration_end": "2025-06-14",
+    "contest_start": "2025-06-15", "contest_end": "2025-08-24",
+    "registration_raw": "2025-04-02 起报名，赛氪平台显示报名期至 2025-06-14",
+    "contest_raw": "本科赛道初赛 6-15、7-06、8-03（14:00-17:00）；决赛 2025-08-23 至 08-24（线上）",
+    "time_confidence": "medium",
+    "source_url": "https://webadm.suse.edu.cn/_s71/2025/0426/c3310a193901/page.psp",
+    "source_note": "第七届。官方口径仍是「每场开赛前 1 小时截止」，平台显示日期仅供参考。"
+  },
+  {
+    "event_slug": "matiji", "year": 2026, "sub_event": "",
+    "registration_start": "2025-12-12", "registration_end": "2026-03-21",
+    "contest_start": "2026-03-22", "contest_end": "2026-08-01",
+    "registration_raw": "2025-12-12 通知发布即报名，平台显示至 2026-03-21",
+    "contest_raw": "本科赛道初赛 3-22、4-26、5-24（14:00-17:00）；决赛 2026-08-01（线上）",
+    "time_confidence": "medium",
+    "source_url": "https://sfzx.yangtzeu.edu.cn/info/1058/1712.htm",
+    "source_note": "第八届。职业院校赛道初赛为 3-21、4-25、5-23。"
+  },
+
+  {
+    "event_slug": "bdc", "year": 2021, "sub_event": "",
+    "registration_start": "2021-04-30", "registration_end": "2021-06-28",
+    "contest_start": "2021-06-01", "contest_end": "2021-08-31",
+    "registration_raw": "2021-04-30 10:00 至 2021-06-28 12:00（报名与组队）",
+    "contest_raw": "初赛 6-01 至 6-30；复赛 7-12 至 8-09；决赛 8 月下旬",
+    "time_confidence": "medium",
+    "source_url": "https://itp.upc.edu.cn/2021/0602/c651a223659/page.htm",
+    "source_note": "微信大数据挑战赛（腾讯微信 × 清华）。当年平台不在和鲸。决赛仅精确到旬。"
+  },
+  {
+    "event_slug": "bdc", "year": 2022, "sub_event": "",
+    "registration_start": "2022-04-26", "registration_end": "2022-06-21",
+    "contest_start": "2022-05-20", "contest_end": "2022-08-31",
+    "registration_raw": "2022-04-26 至 2022-06-21（报名与组队）",
+    "contest_raw": "初赛 5-20 至 6-22；复赛 7-01 至 8-05；决赛 8 月下旬",
+    "time_confidence": "medium",
+    "source_url": "https://sci.upc.edu.cn/2022/0518/c6838a375241/page.htm",
+    "source_note": "决赛仅精确到旬。"
+  },
+  {
+    "event_slug": "bdc", "year": 2023, "sub_event": "",
+    "registration_start": "2023-06-09", "registration_end": "2023-07-18",
+    "contest_start": "2023-06-20", "contest_end": "2023-08-27",
+    "registration_raw": "2023-06-09 10:00 至 2023-07-18 12:00（报名与组队）",
+    "contest_raw": "初赛 6-20 至 7-19；复赛 7-27 至 8-16；决赛 8-26 至 8-27（清华现场答辩）",
+    "time_confidence": "medium",
+    "source_url": "https://jiaowu.nwpu.edu.cn/info/1164/11618.htm",
+    "source_note": "在和鲸平台举办。"
+  },
+  {
+    "event_slug": "bdc", "year": 2024, "sub_event": "",
+    "registration_start": "2024-06-14", "registration_end": "2024-07-12",
+    "contest_start": "2024-06-26", "contest_end": "2024-08-25",
+    "registration_raw": "2024-06-14 12:00 至 2024-07-12 12:00（报名与组队）",
+    "contest_raw": "初赛 6-26 至 7-23；复赛 7-25 至 8-12；决赛 8-24 至 8-25（鄂尔多斯）",
+    "time_confidence": "medium",
+    "source_url": "https://www.eol.cn/news//dongtai/202406/t20240626_2619559.shtml",
+    "source_note": "决赛地点与日期经人民网、清华新闻双向印证。"
+  },
+  {
+    "event_slug": "bdc", "year": 2025, "sub_event": "",
+    "registration_start": "2025-05-20", "registration_end": "2025-07-15",
+    "contest_start": "2025-05-20", "contest_end": "2025-08-29",
+    "registration_raw": "2025-05-20 10:00 至 2025-07-15 12:00（报名与组队）",
+    "contest_raw": "线上赛 5-20 至 7-20；决赛 8 月中下旬，总决赛直播 8-29",
+    "time_confidence": "medium",
+    "source_url": "https://sci.upc.edu.cn/2025/0526/c6838a462927/page.htm",
+    "source_note": "本届无独立复赛，改为线上赛单一阶段。"
+  },
+  {
+    "event_slug": "bdc", "year": 2026, "sub_event": "",
+    "registration_start": "2026-03-26", "registration_end": "2026-07-15",
+    "contest_start": "2026-03-26", "contest_end": "2026-08-31",
+    "registration_raw": "2026-03-26 10:00 至 2026-07-15 12:00（报名与组队）",
+    "contest_raw": "线上赛 3-26 至 8-02；决赛 8 月中下旬",
+    "time_confidence": "medium",
+    "source_url": "https://nercbds.tsinghua.edu.cn/bdc.html",
+    "source_note": "第十一届。有校内通知写报名截止 6-26，与官方口径冲突，此处以官方为准。"
+  },
+
+  {
+    "event_slug": "datafountain", "year": 2021, "sub_event": "CCF BDCI 第九届",
+    "registration_start": "2021-09-16", "registration_end": "2021-11-20",
+    "contest_start": "2021-09-22", "contest_end": "2021-12-05",
+    "registration_raw": "2021-09-16 发布赛题并开放报名，2021-11-20 报名截止",
+    "contest_raw": "初赛 A 榜 9-22 至 11-20；B 榜 11-22 起；决赛（线上）11-23 至 12-05",
+    "time_confidence": "medium",
+    "source_url": "https://www.saikr.com/vse/44621",
+    "source_note": "总决赛线下环节在 12 月中旬，具体日期未找到。"
+  },
+  {
+    "event_slug": "datafountain", "year": 2022, "sub_event": "CCF BDCI 第十届",
+    "registration_start": "2022-08-29", "registration_end": "2022-11-04",
+    "contest_start": "2022-09-05", "contest_end": "2022-11-27",
+    "registration_raw": "2022-08-29 发布赛题并开放报名，2022-11-04 12:00 报名组队截止",
+    "contest_raw": "初赛 A 榜 9-05 至 11-07；B 榜 11-08 起；决赛答辩评审 11-26 至 11-27",
+    "time_confidence": "medium",
+    "source_url": "https://www.datafountain.cn/special/BDCI2022",
+    "source_note": "第十届总决赛实际于 2023 年 3 月在苏州吴江举办，与赛程表上的「2022 年 12 月中旬」不符。"
+  },
+  {
+    "event_slug": "datafountain", "year": 2023, "sub_event": "CCF BDCI 第十一届",
+    "registration_start": "2023-09-25", "registration_end": "2023-11-24",
+    "contest_start": "2023-09-25", "contest_end": "2023-12-17",
+    "registration_raw": "2023-09-25 首批赛题发布并开放报名，各赛题报名组队持续至 2023-11-24",
+    "contest_raw": "初赛作品提交截止 11-27；作品审核/复现 11-28 至 12-08；颁奖典礼 12-16 至 12-17",
+    "time_confidence": "medium",
+    "source_url": "https://www.saikr.com/vse/47863",
+    "source_note": ""
+  },
+  {
+    "event_slug": "datafountain", "year": 2024, "sub_event": "",
+    "registration_start": "2024-09-14", "registration_end": "2024-11-08",
+    "contest_start": "2024-09-19", "contest_end": "2024-12-29",
+    "registration_raw": "2024-09-14 首批赛题发布，报名组队至 2024-11-08 前",
+    "contest_raw": "评测 9-19 开启；初赛提交截止 11-15；复现审核 11-16 至 11-27；线上决赛评审 12-09 至 12-13；总决赛 12-28 至 12-29",
+    "time_confidence": "medium",
+    "source_url": "https://www.datafountain.cn/special/bdci2024",
+    "source_note": ""
+  },
+  {
+    "event_slug": "datafountain", "year": 2025, "sub_event": "CCF BDCI 第十三届",
+    "contest_start": "2025-09-20", "contest_end": "2025-12-31",
+    "contest_raw": "平台显示比赛时间 2025-09-20 至 2025-12-31；官方口径：9 月启动、报名组队截止 11 月上旬、初赛提交截止 11 月中旬、线上决赛评审 12 月上旬、总决赛 12 月下旬",
+    "time_confidence": "low",
+    "source_url": "https://www.xir.cn/races/bdci2025",
+    "source_note": "本届平台迁至中科息壤。官方只公布到「旬」，没有精确到日的公开节点。"
+  },
+  {
+    "event_slug": "datafountain", "year": 2026, "sub_event": "CCF BDCI 第十四届",
+    "contest_start": "2026-06-30", "contest_end": "2026-10-31",
+    "contest_raw": "官方赛程：6 月底发布首批赛题并开放报名；7 月中旬评测；9 月上旬报名组队截止；9 月中旬初赛提交截止；10 月上旬线上决赛评审；10 月下旬总决赛暨颁奖",
+    "time_confidence": "low",
+    "source_url": "https://openjiuwen.com/en/news/news-artical?id=42",
+    "source_note": "官方只给到旬级粒度，此处填的是区间边界而非精确日期。有来源称 7-18 在芜湖启动，与「6 月底」口径冲突。"
+  },
+
+  {
+    "event_slug": "raicom", "year": 2021, "sub_event": "",
+    "registration_end": "2021-10-15",
+    "contest_start": "2021-11-13", "contest_end": "2021-11-13",
+    "registration_raw": "报名截止 2021-10-15 23:59（单校通知口径）",
+    "contest_raw": "国赛（线上）2021-11-13",
+    "time_confidence": "low",
+    "source_url": "https://jwc.xatu.edu.cn/info/15491/195204.htm",
+    "source_note": "第六届 RoboCom。统一报名起止未找到，仅单校口径。"
+  },
+  {
+    "event_slug": "raicom", "year": 2022, "sub_event": "",
+    "registration_start": "2022-03-01", "registration_end": "2022-05-31",
+    "contest_start": "2022-06-01", "contest_end": "2022-08-31",
+    "registration_raw": "2022-03-01 至 2022-05-31",
+    "contest_raw": "省赛选拔 6-01 至 7-15；决赛及颁奖 8 月（拟嘉兴）",
+    "time_confidence": "low",
+    "source_url": "https://jscs.org.cn/x1.php?id=823",
+    "source_note": "决赛仅精确到月。"
+  },
+  {
+    "event_slug": "raicom", "year": 2023, "sub_event": "",
+    "registration_start": "2023-03-01", "registration_end": "2023-07-25",
+    "contest_start": "2023-06-01", "contest_end": "2023-08-31",
+    "registration_raw": "省赛报名 2023-03-01 至 2023-05-31；国赛报名截止 2023-07-25",
+    "contest_raw": "省赛选拔最晚 7-15；晋升公示 7-20；国赛 8 月",
+    "time_confidence": "low",
+    "source_url": "https://cxcy.sut.edu.cn/info/1098/2065.htm",
+    "source_note": "国赛仅精确到月。"
+  },
+  {
+    "event_slug": "raicom", "year": 2024, "sub_event": "",
+    "registration_start": "2023-12-01", "registration_end": "2024-07-20",
+    "contest_start": "2024-06-01", "contest_end": "2024-08-31",
+    "registration_raw": "省赛报名 2023-12-01 起，报名/作品上传最晚 2024-04-30；国赛报名截止 2024-07-20",
+    "contest_raw": "省赛选拔最晚 6-15；晋升公示约 6-30；国赛 8 月",
+    "time_confidence": "low",
+    "source_url": "http://cxcy.ysu.edu.cn/system/_content/download.jsp?urltype=news.DownloadAttachUrl&owner=2020326649&wbfileid=14722533",
+    "source_note": "国赛仅精确到月。"
+  },
+  {
+    "event_slug": "raicom", "year": 2025, "sub_event": "",
+    "registration_start": "2025-03-01", "registration_end": "2025-09-30",
+    "contest_start": "2025-05-01", "contest_end": "2025-11-30",
+    "registration_raw": "省赛/区域选拔赛报名 3 月至 6 月；总决赛报名 7 月至 9 月",
+    "contest_raw": "省赛 5 月至 7 月；全国总决赛 7 月至 11 月（分阶段，杭州、深圳等）",
+    "time_confidence": "low",
+    "source_url": "https://baike.baidu.com/item/2025%E5%B9%B4%E7%9D%BF%E6%8A%97%E6%9C%BA%E5%99%A8%E4%BA%BA%E5%BC%80%E5%8F%91%E8%80%85%E5%A4%A7%E8%B5%9B",
+    "source_note": "官方页面为动态加载，无精确到日的总决赛日程。此处填的是区间边界。"
+  },
+  {
+    "event_slug": "raicom", "year": 2026, "sub_event": "",
+    "registration_end": "2026-07-31",
+    "contest_start": "2026-04-01", "contest_end": "2026-10-31",
+    "registration_raw": "全国报名系统截止 2026 年 7 月",
+    "contest_raw": "省级/区域选拔赛 4 月至 9 月；全国总决赛 7 月至 10 月（杭州/上海/深圳/黄石/杨凌等）",
+    "time_confidence": "low",
+    "source_url": "https://cxcyxy.ntu.edu.cn/2026/0430/c10412a290318/page.htm",
+    "source_note": "报名费 600 元/队。官方只给到月。"
+  },
+
+  {
+    "event_slug": "jsjds4c", "year": 2021, "sub_event": "第14届",
+    "contest_start": "2021-07-17", "contest_end": "2021-08-27",
+    "contest_raw": "国赛 6 个决赛区：7-17 至 7-21 上海（东华）；7-22 至 7-26 上海（上理工/山大）；7-27 至 7-31 阜阳；8-13 至 8-17 南京；8-18 至 8-22 福州；8-23 至 8-27 绍兴",
+    "time_confidence": "medium",
+    "source_url": "http://jsjds.sdu.edu.cn/listshow/1/24/1/",
+    "source_note": "校赛—省赛—国赛三级赛制，无全国统一报名截止，只有国赛决赛区日期较统一。"
+  },
+  {
+    "event_slug": "jsjds4c", "year": 2022, "sub_event": "第15届",
+    "contest_start": "2022-07-17", "contest_end": "2022-08-27",
+    "contest_raw": "国赛 6 个决赛区：7-17 上海；7-22 济南；7-27 沈阳；8-13 厦门；8-18 南京；8-23 杭州",
+    "time_confidence": "medium",
+    "source_url": "http://jsjds.sdu.org.cn/listshow/4/25/1/",
+    "source_note": "2022-02-10 发布通知（中大计赛函[2022]1号），4-08 调整。"
+  },
+  {
+    "event_slug": "jsjds4c", "year": 2023, "sub_event": "第16届",
+    "contest_start": "2023-07-17", "contest_end": "2023-08-22",
+    "contest_raw": "国赛 6 个决赛区：7-17 上海；7-22 济南；7-27 沈阳；8-08 南京（人工智能）；8-13 厦门；8-18 杭州",
+    "time_confidence": "medium",
+    "source_url": "https://jsjds.blcu.edu.cn/info/1043/1950.htm",
+    "source_note": ""
+  },
+  {
+    "event_slug": "jsjds4c", "year": 2024, "sub_event": "第17届",
+    "registration_end": "2024-05-30",
+    "contest_start": "2024-07-17", "contest_end": "2024-08-22",
+    "registration_raw": "上推国赛作品数据提交截止 2024-05-30",
+    "contest_raw": "国赛 6 个决赛区：7-17 上海；7-22 威海；7-27 沈阳；8-08 无锡；8-13 厦门；8-18 金华",
+    "time_confidence": "medium",
+    "source_url": "https://www.applysquare.com/opportunity-cn/o9y29Vr7Bktgtn",
+    "source_note": "各校报名截止差异大，5-30 是上推国赛的截止日，不是报名截止。"
+  },
+  {
+    "event_slug": "jsjds4c", "year": 2025, "sub_event": "第18届",
+    "contest_start": "2025-07-17", "contest_end": "2025-08-17",
+    "contest_raw": "国赛 5 个决赛区（全部线下）：7-17 上海；7-22 南京；7-27 济南/泰安；8-08 杭州；8-13 南京东/长春",
+    "time_confidence": "medium",
+    "source_url": "http://jsjds.blcu.edu.cn/info/1041/1994.htm",
+    "source_note": "南京南赛区报到 7-22，团队负责人须 6-30 前入群。"
+  },
+  {
+    "event_slug": "jsjds4c", "year": 2026, "sub_event": "第19届",
+    "contest_start": "2026-07-17", "contest_end": "2026-08-20",
+    "contest_raw": "国赛 6 个决赛区：7-17 至 7-21 上海；7-22 至 7-26 杭州；7-27 至 7-31 南京南/合肥；8-06 至 8-10 南京东2/长春；8-11 至 8-15 济南/青岛；8-16 至 8-20 南京东1/无锡",
+    "time_confidence": "medium",
+    "source_url": "http://jsjds.blcu.edu.cn/info/1042/2294.htm",
+    "source_note": "第十九届设 11 个大类，「人工智能应用」为第（5）类，属南京东决赛区。官方未给统一报名截止。"
+  },
+
+  {
+    "event_slug": "xfyun", "year": 2021, "sub_event": "第四届",
+    "registration_start": "2021-06-21", "registration_end": "2021-08-21",
+    "contest_start": "2021-06-21", "contest_end": "2021-09-21",
+    "registration_raw": "2021-06-21 至 2021-08-21",
+    "contest_raw": "初赛 6-21 至 8-21；复赛 8-21 至 9-21；决赛/颁奖 10-24 起（1024 开发者节，合肥）",
+    "time_confidence": "low",
+    "source_url": "https://www.saikr.com/vse/44335",
+    "source_note": "该赛事每届含 100+ 赛道，各赛道时间彼此不同。此处为全赛口径。"
+  },
+  {
+    "event_slug": "xfyun", "year": 2022, "sub_event": "",
+    "registration_start": "2022-06-09", "registration_end": "2022-10-24",
+    "contest_start": "2022-06-09", "contest_end": "2022-10-24",
+    "registration_raw": "2022-06-09 启动，报名即日起至 10-24（各赛道不同）",
+    "contest_raw": "初赛 6-09 至 8-09；单项赛题决赛 8-10 至 8 月下旬；总决赛 10-24；颁奖盛典 11-18",
+    "time_confidence": "low",
+    "source_url": "https://developer.aliyun.com/article/1253826",
+    "source_note": "全赛统一节点只有启动日与 1024 颁奖日。"
+  },
+  {
+    "event_slug": "xfyun", "year": 2023, "sub_event": "",
+    "registration_start": "2023-05-06", "registration_end": "2023-06-30",
+    "contest_start": "2023-05-06", "contest_end": "2023-10-29",
+    "registration_raw": "2023-05-06 启动，报名截止 2023-06-30",
+    "contest_raw": "整体活动 5 月至 10 月；决赛/颁奖 10-24（1024 开发者节，合肥，10-24 至 10-29）",
+    "time_confidence": "low",
+    "source_url": "https://www.ahchanye.com/hd/28626.html",
+    "source_note": "初赛/复赛分阶段日期未找到。"
+  },
+  {
+    "event_slug": "xfyun", "year": 2024, "sub_event": "第五届",
+    "registration_start": "2024-06-11", "contest_end": "2024-10-27",
+    "contest_start": "2024-06-11",
+    "registration_raw": "2024-06-11 启动并开启报名（108 道赛题：72 算法 + 36 应用）",
+    "contest_raw": "总决赛/颁奖 10-24 至 10-27（第七届世界声博会暨 1024 开发者节，合肥奥体）",
+    "time_confidence": "low",
+    "source_url": "https://www.aitop100.cn/infomation/details/18763.html",
+    "source_note": "统一报名截止未找到。"
+  },
+  {
+    "event_slug": "xfyun", "year": 2025, "sub_event": "第八届",
+    "registration_start": "2025-06-12", "registration_end": "2025-08-17",
+    "contest_start": "2025-06-13", "contest_end": "2025-08-17",
+    "registration_raw": "2025-06-12 启幕（深圳），作品征集至 2025-08-17 24:00",
+    "contest_raw": "作品征集 6-13 至 8-17",
+    "time_confidence": "low",
+    "source_url": "https://www.aitop100.cn/infomation/details/26990.html",
+    "source_note": "决赛/颁奖日期未找到。"
+  },
+  {
+    "event_slug": "xfyun", "year": 2026, "sub_event": "第九届",
+    "registration_start": "2026-06-09",
+    "contest_start": "2026-06-09", "contest_end": "2026-10-24",
+    "registration_raw": "2026-06-09 启动并开启报名，共 108 道赛题",
+    "contest_raw": "星火杯赛道：作品征集 6-09 至 8-13；复赛优化 8-27 至 9-13；全球总决赛 10-08 至 10-21；荣耀盛典 10-23 至 10-24",
+    "time_confidence": "low",
+    "source_url": "https://challenge.xfyun.cn/xinghuo",
+    "source_note": "各算法赛题报名截止互不相同（如变电站识别 8-10、智慧生活助理 8-27）。"
+  }
+]

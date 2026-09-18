@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<title>赛事信息聚合</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#/">
+      <span class="brand-mark">赛</span>
+      <span class="brand-text">赛事信息聚合</span>
+    </a>
+
+    <nav class="nav">
+      <a href="#/" data-nav="overview">总览</a>
+      <a href="#/timeline" data-nav="timeline">历年时间线</a>
+      <a href="#/sources" data-nav="sources">数据源</a>
+    </nav>
+
+    <label class="gd-toggle" title="开启后隐藏决赛在外省的线下赛站。默认全部展示——线上赛事与网络赛初赛都能在广东参加，不必过滤。">
+      <input type="checkbox" id="gd-only">
+      <span>隐藏需出省的</span>
+    </label>
+  </div>
+</header>
+
+<main id="app">
+  <div class="loading">加载中…</div>
+</main>
+
+<!-- 手动爬取按钮：固定在右下角，所有页面可见 -->
+<button id="crawl-fab" class="fab" title="立即爬取">
+  <span class="fab-icon">↻</span>
+  <span class="fab-text">立即爬取</span>
+</button>
+
+<!-- 爬取进度抽屉 -->
+<div id="crawl-drawer" class="drawer" hidden>
+  <div class="drawer-head">
+    <strong>爬取进度</strong>
+    <button id="drawer-close" class="icon-btn" aria-label="关闭">×</button>
+  </div>
+  <div id="crawl-summary" class="drawer-summary"></div>
+  <div id="crawl-items" class="drawer-body"></div>
+</div>
+
+<div id="toast" class="toast" hidden></div>
+
+<script src="/crawl.js"></script>
+<script src="/timeline.js"></script>
+<script src="/app.js"></script>
+</body>
+</html>

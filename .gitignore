@@ -1,0 +1,11 @@
+.env
+data/app.db
+data/app.db-wal
+data/app.db-shm
+data/runtime.json
+logs/
+__pycache__/
+*.pyc
+.venv/
+.tmpcheck/
+.server.log
