@@ -26,6 +26,7 @@ from typing import Any, Iterator
 from ..models import EditionDraft, ParsedTime
 from ..pipeline.normalize import parse_any_datetime
 from .base import BaseCrawler
+from .guards import SourceStructureError, expect_first_page
 
 log = logging.getLogger(__name__)
 
@@ -59,7 +60,8 @@ class XfyunCrawler(BaseCrawler):
         data = self.http.get_json(_ENDPOINT)
         items = data.get("data") or []
         if not isinstance(items, list):
-            raise RuntimeError(f"讯飞接口返回结构异常：{str(data)[:200]}")
+            raise SourceStructureError(f"讯飞接口返回结构异常：{str(data)[:200]}")
+        expect_first_page(items, source=self.name)
 
         for item in items:
             yield item, self.title_of(item), self.url_of(item)

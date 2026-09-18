@@ -22,6 +22,7 @@ from ..pipeline import extract
 from ..pipeline.normalize import infer_year, parse_any_datetime, year_from_edition
 from ..pipeline.textutil import clean_text
 from .base import BaseCrawler
+from .guards import expect_first_page
 
 _PAGE_SIZE = 50
 _PROGID = 20  # 大赛通知栏目
@@ -54,7 +55,9 @@ class LanqiaoCrawler(BaseCrawler):
                     "pagesize": _PAGE_SIZE,
                 },
             )
-            items = data.get("datalist") or []
+            items = expect_first_page(
+                data.get("datalist") or [], source=self.name, page=page
+            )
             if not items:
                 break
             for item in items:

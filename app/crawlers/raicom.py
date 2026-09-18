@@ -20,6 +20,7 @@ from ..pipeline import extract
 from ..pipeline.normalize import infer_year, parse_any_datetime
 from ..pipeline.textutil import strip_html
 from .base import BaseCrawler
+from .guards import expect_first_page
 
 _ENDPOINT = "https://service.raicom.com.cn/api/matches"
 
@@ -34,7 +35,8 @@ class RaicomCrawler(BaseCrawler):
 
     def fetch(self, mode: str) -> Iterator[tuple[Any, str, str | None]]:
         data = self.http.get_json(_ENDPOINT)
-        for item in data.get("data") or []:
+        items = expect_first_page(data.get("data") or [], source=self.name)
+        for item in items:
             yield item, item.get("matchname") or "", self.url_of(item)
 
     def external_id_of(self, payload: Any) -> str:

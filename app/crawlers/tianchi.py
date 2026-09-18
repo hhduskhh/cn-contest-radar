@@ -16,6 +16,7 @@ from typing import Any, Iterator
 from ..models import EditionDraft
 from ..pipeline.normalize import parse_any_datetime
 from .base import BaseCrawler
+from .guards import expect_first_page
 
 _ENDPOINT = "https://tianchi.aliyun.com/competition/proxy/api/competition/api/race/listBrief"
 _PAGE_SIZE = 10          # 服务端固定值，传别的也没用
@@ -40,7 +41,9 @@ class TianchiCrawler(BaseCrawler):
                 _ENDPOINT,
                 params={"pageNum": page, "pageSize": _PAGE_SIZE, "type": 2},
             )
-            items = (data.get("data") or {}).get("list") or []
+            items = expect_first_page(
+                (data.get("data") or {}).get("list") or [], source=self.name, page=page
+            )
             if not items:
                 break
 

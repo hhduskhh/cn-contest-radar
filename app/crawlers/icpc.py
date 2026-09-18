@@ -26,6 +26,7 @@ from ..pipeline import extract, region
 from ..pipeline.normalize import parse_any_datetime, year_from_edition
 from ..pipeline.textutil import strip_html
 from .base import BaseCrawler
+from .guards import expect_first_page
 
 log = logging.getLogger(__name__)
 
@@ -63,10 +64,15 @@ class ICPCCrawler(BaseCrawler):
             try:
                 page = self.http.get_text(url)
             except Exception as exc:  # noqa: BLE001 —— 翻到底了就别报错
+                if index == 0:
+                    # 首页都取不到就不是"翻到底"了，得让该源当次标红
+                    raise
                 log.debug("ICPC 第 %d 页取不到，视为结束：%s", index, exc)
                 break
 
-            items = self._parse_list(page)
+            items = expect_first_page(
+                self._parse_list(page), source=self.name, page=index + 1
+            )
             if not items:
                 break
 

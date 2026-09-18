@@ -20,6 +20,7 @@ from ..models import EditionDraft
 from ..nuxt import parse_nuxt_iife
 from ..pipeline.normalize import parse_any_datetime
 from .base import BaseCrawler
+from .guards import expect_first_page
 
 _ENDPOINT = "https://www.datafountain.cn/competitions"
 _MAX_PAGES = 15
@@ -48,6 +49,7 @@ class DataFountainCrawler(BaseCrawler):
                 # Nuxt 结构变了就报错，让该源标红，而不是静默返回空
                 raise RuntimeError(f"DataFountain 页面结构解析失败（可能已改版）: {exc}") from exc
 
+            expect_first_page(items, source=self.name, page=page)
             if not items:
                 break
 

@@ -17,6 +17,7 @@ from typing import Any, Iterator
 from ..models import EditionDraft
 from ..pipeline.normalize import parse_any_datetime
 from .base import BaseCrawler
+from .guards import expect_first_page
 
 _ENDPOINT = "https://aistudio.baidu.com/studio/match/list"
 _MAX_PAGES = 66
@@ -38,7 +39,9 @@ class AIStudioCrawler(BaseCrawler):
         for page in range(1, self.max_pages + 1):
             data = self.http.get_json(_ENDPOINT, params={"p": page})
             result = data.get("result") or {}
-            items = result.get("data") or []
+            items = expect_first_page(
+                result.get("data") or [], source=self.name, page=page
+            )
             if not items:
                 break
 

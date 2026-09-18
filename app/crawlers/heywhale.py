@@ -20,6 +20,7 @@ from typing import Any, Iterator
 from ..models import EditionDraft
 from ..pipeline.normalize import parse_any_datetime
 from .base import BaseCrawler
+from .guards import expect_first_page
 
 _ENDPOINT = "https://www.heywhale.com/v2/api/competitions"
 _MAX_PAGES = 55
@@ -40,7 +41,9 @@ class HeywhaleCrawler(BaseCrawler):
 
         for page in range(1, self.max_pages + 1):
             data = self.http.get_json(_ENDPOINT, params={"page": page})
-            items = data.get("data") or []
+            items = expect_first_page(
+                data.get("data") or [], source=self.name, page=page
+            )
             if not items:
                 break
 

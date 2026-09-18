@@ -26,6 +26,7 @@ from ..pipeline.ccpc_schedule import parse_schedule
 from ..pipeline.normalize import infer_year, parse_any_datetime, year_from_edition
 from ..pipeline.textutil import clean_text, strip_html
 from .base import BaseCrawler
+from .guards import expect_first_page
 
 log = logging.getLogger(__name__)
 
@@ -56,7 +57,9 @@ class CCPCCrawler(BaseCrawler):
                 f"{self.base_url}api/archive",
                 params={"page": page, "pageSize": _PAGE_SIZE},
             )
-            batch = data.get("data") or []
+            batch = expect_first_page(
+                data.get("data") or [], source=self.name, page=page
+            )
             if not batch:
                 break
             items.extend(batch)
