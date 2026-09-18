@@ -3,12 +3,13 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, HTTPException, Query
 
 from ..db import get_conn
 from ..pipeline.forecast import forecast_event
+from ..pipeline.normalize import to_utc_iso
 from .serialize import edition_to_dict, local_date
 
 router = APIRouter(prefix="/api", tags=["events"])
@@ -195,15 +196,23 @@ def upcoming(
     region_filter: str | None = Query(None, description="传 guangdong 只看广东线下赛站"),
 ):
     """即将截止报名与即将开赛的赛事。总览页红榜的数据源。"""
+    # 边界值必须是库里那种 'YYYY-MM-DDTHH:MM:SSZ' 串。不能拿 datetime('now') 比：
+    # 它给的是 'YYYY-MM-DD HH:MM:SS'（空格分隔、无 Z），字典序下 'T'(0x54) 恒大于
+    # ' '(0x20)，于是同一天的行一律被判成"更晚"——时分秒根本不参与比较，
+    # 今天已经截止的会被当成即将截止，窗口最后一天则整日被漏掉。
+    now = datetime.now(timezone.utc)
+    now_iso = to_utc_iso(now)
+    until_iso = to_utc_iso(now + timedelta(days=days))
+
     sql = (
         _BEST_JOIN
         + """
         WHERE ((b.registration_end IS NOT NULL
-                AND b.registration_end >= datetime('now')
-                AND b.registration_end <= datetime('now', ?))
+                AND b.registration_end >= ?
+                AND b.registration_end <= ?)
             OR (b.contest_start IS NOT NULL
-                AND b.contest_start >= datetime('now')
-                AND b.contest_start <= datetime('now', ?)))
+                AND b.contest_start >= ?
+                AND b.contest_start <= ?))
         """
         + _region_clause(region_filter)
         + " ORDER BY COALESCE(b.registration_end, b.contest_start) LIMIT ?"
@@ -211,7 +220,9 @@ def upcoming(
     with get_conn() as conn:
         rows = [
             edition_to_dict(r)
-            for r in conn.execute(sql, (f"+{days} days", f"+{days} days", limit)).fetchall()
+            for r in conn.execute(
+                sql, (now_iso, until_iso, now_iso, until_iso, limit)
+            ).fetchall()
         ]
     return {"editions": rows, "days": days}
 

@@ -14,16 +14,18 @@ import sys
 import tempfile
 import threading
 import unittest
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from app import config, db  # noqa: E402
+from app.api.routes_events import upcoming  # noqa: E402
 from app.crawlers import ensure_registered  # noqa: E402
 from app.crawlers.base import BaseCrawler  # noqa: E402
 from app.crawlers.guards import SourceStructureError, expect_first_page  # noqa: E402
 from app.models import EditionDraft  # noqa: E402
-from app.pipeline import runner  # noqa: E402
+from app.pipeline import normalize, runner  # noqa: E402
 
 
 class TempDbTest(unittest.TestCase):
@@ -213,6 +215,71 @@ class PerItemIsolationTest(TempDbTest):
         row = self.query("SELECT * FROM sources WHERE key = ?", (self.crawler.key,))[0]
         self.assertEqual(row["health"], "ok")
         self.assertIsNone(row["last_error"])
+
+
+class UpcomingWindowTest(TempDbTest):
+    """缺陷 4：upcoming 的时间边界必须带时分秒，不能只比到天。"""
+
+    def setUp(self) -> None:
+        super().setUp()
+        with db.get_conn() as conn:
+            conn.execute(
+                "INSERT INTO events (id, slug, name, category)"
+                " VALUES (1, 'demo', '演示赛', 'algorithm')"
+            )
+        self.now = datetime.now(timezone.utc)
+
+    def _add_edition(self, edition_id: int, **times) -> None:
+        stamp = normalize.utcnow_iso()
+        with db.get_conn() as conn:
+            conn.execute(
+                """INSERT INTO event_editions
+                     (id, event_id, year, sub_event, origin, source_key,
+                      registration_end, contest_start, first_seen_at, updated_at)
+                   VALUES (?, 1, 2026, ?, 'crawl', 'demo', ?, ?, ?, ?)""",
+                (
+                    edition_id,
+                    f"s{edition_id}",
+                    normalize.to_utc_iso(times["registration_end"])
+                    if times.get("registration_end")
+                    else None,
+                    normalize.to_utc_iso(times["contest_start"])
+                    if times.get("contest_start")
+                    else None,
+                    stamp,
+                    stamp,
+                ),
+            )
+
+    def _upcoming_ids(self, days: int = 90) -> set[int]:
+        result = upcoming(days=days, limit=30, region_filter=None)
+        return {row["id"] for row in result["editions"]}
+
+    def test_deadline_earlier_today_is_excluded(self) -> None:
+        """今天已经过去的截止时刻不能被算成"即将截止"。
+
+        修复前它和 datetime('now') 比到第 10 个字符就分出大小（'T' > ' '），
+        被当成还没到，于是过期的报名截止照样挂在红榜上。
+        """
+        today_start = self.now.replace(hour=0, minute=0, second=0, microsecond=0)
+        if today_start >= self.now:
+            self.skipTest("跑在 UTC 当天零点，构造不出当天更早的时刻")
+
+        self._add_edition(1, registration_end=today_start)
+        self.assertNotIn(1, self._upcoming_ids())
+
+    def test_deadline_within_window_is_included(self) -> None:
+        self._add_edition(2, registration_end=self.now + timedelta(days=3))
+        self.assertIn(2, self._upcoming_ids())
+
+    def test_last_day_of_window_is_not_dropped(self) -> None:
+        """窗口最后一天不能因空格 vs 'T' 的差异被整日排除。"""
+        self._add_edition(3, registration_end=self.now + timedelta(days=90))
+        self.assertIn(3, self._upcoming_ids())
+
+    def test_beyond_window_is_excluded(self) -> None:
+        self._add_edition(4, contest_start=self.now + timedelta(days=200))
+        self.assertNotIn(4, self._upcoming_ids())
 
 
 if __name__ == "__main__":
