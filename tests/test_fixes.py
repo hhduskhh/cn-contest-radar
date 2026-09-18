@@ -21,11 +21,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from app import config, db  # noqa: E402
 from app.api.routes_events import upcoming  # noqa: E402
+from app.api.serialize import edition_to_dict  # noqa: E402
 from app.crawlers import ensure_registered  # noqa: E402
 from app.crawlers.base import BaseCrawler  # noqa: E402
 from app.crawlers.guards import SourceStructureError, expect_first_page  # noqa: E402
 from app.models import EditionDraft  # noqa: E402
-from app.pipeline import normalize, runner  # noqa: E402
+from app.pipeline import normalize, persist, runner  # noqa: E402
+from app.pipeline.status import effective_status  # noqa: E402
 
 
 class TempDbTest(unittest.TestCase):
@@ -280,6 +282,80 @@ class UpcomingWindowTest(TempDbTest):
     def test_beyond_window_is_excluded(self) -> None:
         self._add_edition(4, contest_start=self.now + timedelta(days=200))
         self.assertNotIn(4, self._upcoming_ids())
+
+
+class EffectiveStatusTest(unittest.TestCase):
+    """缺陷 5：状态不能爬取时算一次就冻住，读取时要按当前时间纠正。"""
+
+    NOW = "2026-09-18T10:00:00Z"
+
+    def test_stored_running_but_contest_ended(self) -> None:
+        """实测那 68 条的形态：比赛早打完了，状态还挂着进行中。"""
+        record = {"status": "running", "contest_end": "2026-06-01T00:00:00Z"}
+        self.assertEqual(effective_status(record, now=self.NOW), "finished")
+
+    def test_registration_closed_without_contest_time(self) -> None:
+        record = {"status": "registering", "registration_end": "2026-08-01T00:00:00Z"}
+        self.assertEqual(effective_status(record, now=self.NOW), "finished")
+
+    def test_ongoing_keeps_stored_status(self) -> None:
+        """还在报名/还在比赛的，不能被改掉。"""
+        running = {
+            "status": "running",
+            "contest_start": "2026-09-01T00:00:00Z",
+            "contest_end": "2026-10-01T00:00:00Z",
+        }
+        self.assertEqual(effective_status(running, now=self.NOW), "running")
+
+        registering = {"status": "registering", "registration_end": "2026-10-01T00:00:00Z"}
+        self.assertEqual(effective_status(registering, now=self.NOW), "registering")
+
+    def test_unknown_status_is_not_invented(self) -> None:
+        """时间待公布的行不该被硬塞一个状态。"""
+        self.assertIsNone(effective_status({"status": None}, now=self.NOW))
+        self.assertEqual(effective_status({"status": "upcoming"}, now=self.NOW), "upcoming")
+
+    def test_read_path_applies_it(self) -> None:
+        """收口点在 edition_to_dict —— 那条 68 条的路径。"""
+        row = {"id": 1, "status": "running", "contest_end": "2020-01-01T00:00:00Z"}
+        self.assertEqual(edition_to_dict(row)["status"], "finished")
+
+
+class DeriveStatusTest(unittest.TestCase):
+    """入库时的推导逻辑与改前一致（只是换成了 ISO 串实现）。"""
+
+    NOW = datetime(2026, 9, 18, 10, 0, tzinfo=timezone.utc)
+
+    def _derive(self, **kwargs) -> str | None:
+        draft = EditionDraft(event_slug="demo", year=2026, **kwargs)
+        return persist.derive_status(draft, now=self.NOW)
+
+    def test_same_rules_as_before(self) -> None:
+        cases = [
+            (dict(registration_end=datetime(2026, 8, 1, tzinfo=timezone.utc),
+                  contest_end=datetime(2026, 8, 10, tzinfo=timezone.utc)), "finished"),
+            (dict(registration_end=datetime(2026, 8, 1, tzinfo=timezone.utc)), "finished"),
+            (dict(contest_start=datetime(2026, 9, 1, tzinfo=timezone.utc),
+                  contest_end=datetime(2026, 10, 1, tzinfo=timezone.utc)), "running"),
+            (dict(registration_start=datetime(2026, 9, 1, tzinfo=timezone.utc),
+                  registration_end=datetime(2026, 10, 1, tzinfo=timezone.utc)), "registering"),
+            (dict(contest_start=datetime(2026, 10, 1, tzinfo=timezone.utc)), "upcoming"),
+            (dict(registration_end=datetime(2026, 10, 1, tzinfo=timezone.utc)), "upcoming"),
+            (dict(), None),
+        ]
+        for kwargs, expected in cases:
+            with self.subTest(expected=expected):
+                self.assertEqual(self._derive(**kwargs), expected)
+
+    def test_draft_status_wins(self) -> None:
+        """源自带的 status 优先于按时间推的。"""
+        draft = EditionDraft(
+            event_slug="demo",
+            year=2026,
+            status="running",
+            contest_end=datetime(2020, 1, 1, tzinfo=timezone.utc),
+        )
+        self.assertEqual(persist.derive_status(draft, now=self.NOW), "running")
 
 
 if __name__ == "__main__":

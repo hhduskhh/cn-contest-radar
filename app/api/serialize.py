@@ -11,6 +11,7 @@ from datetime import datetime, timezone
 from typing import Any
 
 from .. import config
+from ..pipeline.status import effective_status
 
 
 def local_date(value: str | None) -> str | None:
@@ -97,7 +98,8 @@ def edition_to_dict(row: Any) -> dict:
         "source_key": record.get("source_key"),
         "source_url": record.get("source_url"),
         "source_note": record.get("source_note"),
-        "status": record.get("status"),
+        # 按"现在"算，不用库里那个 —— 后者是爬取时算的，会冻在那儿
+        "status": effective_status(record),
         "time_confidence": record.get("time_confidence"),
         "region": record.get("region") or "online",
         "access": _ACCESS.get(record.get("region") or "online", _ACCESS["online"])[0],

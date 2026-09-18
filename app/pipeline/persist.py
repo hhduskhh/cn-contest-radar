@@ -19,6 +19,7 @@ from ..db import get_conn
 from ..models import EditionDraft, RawItem
 from .events_catalog import get_catalog
 from .normalize import to_utc_iso, utcnow_iso
+from .status import derive_status_from_iso
 
 log = logging.getLogger(__name__)
 
@@ -201,29 +202,23 @@ def upsert_edition(
 
 
 def derive_status(draft: EditionDraft, now: datetime | None = None) -> str | None:
-    """由时间推导赛事状态。用于总览页的徽章与「即将截止」红榜。"""
+    """由时间推导赛事状态，入库时算一次。
+
+    读路径不认这个值（它会冻住），另行按当前时间纠正 —— 见 status.effective_status。
+    """
     if draft.status:
         return draft.status
-    now = now or datetime.now(tz=_tz())
-    reg_start = draft.registration_start
-    reg_end = draft.registration_end
-    contest_start = draft.contest_start
-    contest_end = draft.contest_end
+    return derive_status_from_iso(
+        registration_start=_iso(draft.registration_start),
+        registration_end=_iso(draft.registration_end),
+        contest_start=_iso(draft.contest_start),
+        contest_end=_iso(draft.contest_end),
+        now=to_utc_iso(now) if now is not None else None,
+    )
 
-    def lt(a, b) -> bool:
-        return a is not None and b is not None and a < b
 
-    if reg_end and reg_end < now and (contest_end is None or contest_end < now):
-        return "finished"
-    if contest_start and lt(contest_start, now) and (contest_end is None or now < contest_end):
-        return "running"
-    if reg_start and lt(reg_start, now) and reg_end and now < reg_end:
-        return "registering"
-    if contest_start and now < contest_start:
-        return "upcoming"
-    if reg_end and now < reg_end:
-        return "upcoming"
-    return None
+def _iso(value: datetime | None) -> str | None:
+    return to_utc_iso(value) if value else None
 
 
 def _tz():
