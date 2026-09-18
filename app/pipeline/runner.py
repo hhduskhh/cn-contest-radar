@@ -209,10 +209,29 @@ def _finish(stats: CrawlStats, run_id: int, started: float) -> None:
     )
 
 
+def _fail_run(run_id: int, reason: str) -> None:
+    """把一个还没真正开始的批次直接判失败。"""
+    now = _now_iso()
+    with get_conn() as conn:
+        conn.execute(
+            "UPDATE crawl_runs SET status = 'failed', finished_at = ? WHERE id = ?",
+            (now, run_id),
+        )
+        conn.execute(
+            """UPDATE crawl_run_items
+                  SET status = 'failed', finished_at = ?, error = ?
+                WHERE run_id = ? AND status IN ('pending', 'running')""",
+            (now, reason, run_id),
+        )
+
+
 def execute_run(run_id: int, source_keys: list[str], mode: str) -> None:
     """执行批次。同步阻塞，调用方负责放到线程里跑。"""
     if not _run_lock.acquire(blocking=False):
-        log.warning("已有批次在执行，跳过 run_id=%s", run_id)
+        # 不能就这么 return：批次行会永久停在 running，
+        # active_run_id() 此后一直认为"有任务在跑"，手动触发再也起不来。
+        log.warning("已有批次在执行，run_id=%s 标记为失败", run_id)
+        _fail_run(run_id, "已有批次在执行，本批次未开始")
         return
     try:
         results: list[CrawlStats] = []
