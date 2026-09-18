@@ -12,6 +12,7 @@ import threading
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
+from typing import Any
 
 from .. import config
 from ..crawlers import REGISTRY, ensure_registered
@@ -90,7 +91,11 @@ def _update_run_item(run_id: int, source_key: str, **fields) -> None:
 
 
 def _mark_source_health(source_key: str, ok: bool, error: str | None, *, note: str | None = None) -> None:
-    """更新源健康状态。连续失败 3 次以上标 failing。"""
+    """更新源健康状态。连续失败 3 次以上标 failing。
+
+    note 用于"跑通了但有部分条目没处理成"这类降级情形：健康度记 degraded，
+    原因写进 last_error 让页面上看得见，下一次干净的成功会把它清掉。
+    """
     with get_conn() as conn:
         row = conn.execute(
             "SELECT consecutive_failures FROM sources WHERE key = ?", (source_key,)
@@ -100,11 +105,16 @@ def _mark_source_health(source_key: str, ok: bool, error: str | None, *, note: s
         if ok:
             conn.execute(
                 """UPDATE sources
-                      SET last_run_at = ?, last_success_at = ?, last_error = NULL,
-                          consecutive_failures = 0,
-                          health = CASE WHEN note IS NULL OR note = '' THEN 'ok' ELSE 'degraded' END
+                      SET last_run_at = ?, last_success_at = ?, last_error = ?,
+                          consecutive_failures = 0, health = ?
                     WHERE key = ?""",
-                (_now_iso(), _now_iso(), source_key),
+                (
+                    _now_iso(),
+                    _now_iso(),
+                    note[:1000] if note else None,
+                    "degraded" if note else "ok",
+                    source_key,
+                ),
             )
         else:
             failures += 1
@@ -117,6 +127,49 @@ def _mark_source_health(source_key: str, ok: bool, error: str | None, *, note: s
                     WHERE key = ?""",
                 (_now_iso(), (error or "")[:1000], failures, health, source_key),
             )
+
+
+def _ingest_item(
+    conn,
+    crawler,
+    catalog,
+    source_key: str,
+    payload: Any,
+    title: str,
+    url: str | None,
+) -> tuple[bool, bool, int]:
+    """落一条原始记录及其届次。返回 (is_new, changed, editions_written)。
+
+    单独成函数，是为了让每条记录各有一个 try（见 run_one_source）：
+    站点偶尔返回残缺字段时，该丢的只是那一条，不是这个源剩下的全部条目。
+    """
+    item = RawItem(
+        source_key=source_key,
+        external_id=crawler.external_id_of(payload),
+        title=title,
+        url=url,
+        published_at=crawler.published_at_of(payload),
+        payload=payload,
+        text_blob=crawler.text_blob_of(payload),
+    )
+    row_id, is_new, changed = upsert_source_item(conn, item)
+
+    edited = 0
+    # 内容没变就跳过解析与写库 —— 增量模式省下的开销主要在这里
+    if changed:
+        for draft in crawler.derive(payload, title, url):
+            # derive 里可能引用了标题匹配，这里兜一道，保证 slug 有效
+            if draft.event_slug and catalog.id_of(draft.event_slug) is None:
+                draft.event_slug = catalog.match(title)
+            if upsert_edition(
+                conn,
+                draft,
+                source_key=source_key,
+                source_item_id=row_id,
+                source_url=url,
+            ):
+                edited += 1
+    return is_new, changed, edited
 
 
 def run_one_source(source_key: str, run_id: int, mode: str) -> CrawlStats:
@@ -139,35 +192,30 @@ def run_one_source(source_key: str, run_id: int, mode: str) -> CrawlStats:
         for payload, title, url in crawler.fetch(mode):
             stats.items_found += 1
 
-            item = RawItem(
-                source_key=source_key,
-                external_id=crawler.external_id_of(payload),
-                title=title,
-                url=url,
-                published_at=crawler.published_at_of(payload),
-                payload=payload,
-                text_blob=crawler.text_blob_of(payload),
-            )
-            row_id, is_new, changed = upsert_source_item(conn, item)
+            # **每条一个 try**：整源共用一个是错的 —— 站点偶尔返回一条残缺记录，
+            # 就会把这之后的所有条目一起丢掉，而这个源还记成 failed。
+            # 坏的那条跳过并计数，源照常跑完。
+            try:
+                is_new, changed, written = _ingest_item(
+                    conn, crawler, catalog, source_key, payload, title, url
+                )
+            except Exception as exc:  # noqa: BLE001 —— 坏的是这一条，不是这个源
+                try:
+                    conn.rollback()  # 丢掉这条可能残留的半截写入
+                except Exception:  # noqa: BLE001
+                    pass
+                stats.items_failed += 1
+                log.warning(
+                    "数据源 %s 的条目「%s」处理失败，已跳过：%s",
+                    source_key, (title or "?")[:60], exc,
+                )
+                continue
+
             if is_new:
                 stats.items_new += 1
             elif changed:
                 stats.items_updated += 1
-
-            # 内容没变就跳过解析与写库 —— 增量模式省下的开销主要在这里
-            if changed:
-                for draft in crawler.derive(payload, title, url):
-                    # derive 里可能引用了标题匹配，这里兜一道，保证 slug 有效
-                    if draft.event_slug and catalog.id_of(draft.event_slug) is None:
-                        draft.event_slug = catalog.match(title)
-                    if upsert_edition(
-                        conn,
-                        draft,
-                        source_key=source_key,
-                        source_item_id=row_id,
-                        source_url=url,
-                    ):
-                        edited += 1
+            edited += written
 
             # **每条都提交**。不批量攒着提交，是因为 fetch() 会在 yield 之间发网络请求
             # （CCPC 每条要取一次详情，约 1 秒），攒 50 条就等于把写事务开着 50 秒，
@@ -190,7 +238,8 @@ def run_one_source(source_key: str, run_id: int, mode: str) -> CrawlStats:
 
     stats.editions_written = edited
     _finish(stats, run_id, started)
-    _mark_source_health(source_key, stats.status == "success", stats.error)
+    note = f"{stats.items_failed} 条解析失败，已跳过" if stats.items_failed else None
+    _mark_source_health(source_key, stats.status == "success", stats.error, note=note)
     return stats
 
 

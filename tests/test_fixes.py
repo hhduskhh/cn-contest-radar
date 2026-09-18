@@ -20,7 +20,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from app import config, db  # noqa: E402
 from app.crawlers import ensure_registered  # noqa: E402
+from app.crawlers.base import BaseCrawler  # noqa: E402
 from app.crawlers.guards import SourceStructureError, expect_first_page  # noqa: E402
+from app.models import EditionDraft  # noqa: E402
 from app.pipeline import runner  # noqa: E402
 
 
@@ -125,6 +127,92 @@ class FirstPageGuardTest(TempDbTest):
             json_payload={"data": [{"id": 1, "matchname": "睿抗机器人开发者大赛"}]}
         )
         self.assertEqual(len(list(crawler.fetch("incremental"))), 1)
+
+
+class _FlakyCrawler(BaseCrawler):
+    """带一条坏数据的假源，不联网。"""
+
+    key = "flaky"
+    name = "测试源"
+    kind = "structured"
+    base_url = "http://example.invalid/"
+
+    payloads: list = []
+
+    def fetch(self, mode):
+        for payload in self.payloads:
+            yield payload, payload["title"], None
+
+    def external_id_of(self, payload):
+        return str(payload["id"])
+
+    def derive(self, payload, title, url):
+        if payload.get("boom"):
+            raise ValueError("字段残缺")
+        return [EditionDraft(event_slug=None, year=2026, title=title)]
+
+
+class PerItemIsolationTest(TempDbTest):
+    """缺陷 3：单条解析失败不能丢掉该源剩下的条目。"""
+
+    def setUp(self) -> None:
+        super().setUp()
+        self.crawler = _FlakyCrawler()
+        self.crawler.payloads = [
+            {"id": 1, "title": "第一条"},
+            {"id": 2, "title": "第二条", "boom": True},
+            {"id": 3, "title": "第三条"},
+        ]
+        runner.REGISTRY[self.crawler.key] = self.crawler
+        with db.get_conn() as conn:
+            conn.execute(
+                "INSERT INTO sources (key, name, kind) VALUES (?, ?, 'structured')",
+                (self.crawler.key, self.crawler.name),
+            )
+
+    def tearDown(self) -> None:
+        runner.REGISTRY.pop(self.crawler.key, None)
+        super().tearDown()
+
+    def _run(self) -> runner.CrawlStats:
+        run_id = runner.create_run("manual", "incremental", [self.crawler.key])
+        return runner.run_one_source(self.crawler.key, run_id, "incremental")
+
+    def test_bad_item_is_skipped_not_fatal(self) -> None:
+        stats = self._run()
+
+        self.assertEqual(stats.status, "success")
+        self.assertEqual(stats.items_found, 3)
+        self.assertEqual(stats.items_failed, 1)
+        self.assertEqual(stats.items_new, 2)
+
+        ids = sorted(
+            r["external_id"]
+            for r in self.query(
+                "SELECT external_id FROM source_items WHERE source_key = ?",
+                (self.crawler.key,),
+            )
+        )
+        # 坏条目之后的那条仍在库里。修复前整源一个 try，这里只剩 ["1"]
+        self.assertEqual(ids, ["1", "3"])
+
+    def test_failed_item_marks_source_degraded(self) -> None:
+        self._run()
+
+        row = self.query("SELECT * FROM sources WHERE key = ?", (self.crawler.key,))[0]
+        self.assertEqual(row["health"], "degraded")
+        self.assertIn("1 条解析失败", row["last_error"])
+        # 单条失败不算源失败，不该累积连续失败次数
+        self.assertEqual(row["consecutive_failures"], 0)
+
+    def test_clean_run_restores_health(self) -> None:
+        self._run()
+        self.crawler.payloads = [p for p in self.crawler.payloads if not p.get("boom")]
+        self._run()
+
+        row = self.query("SELECT * FROM sources WHERE key = ?", (self.crawler.key,))[0]
+        self.assertEqual(row["health"], "ok")
+        self.assertIsNone(row["last_error"])
 
 
 if __name__ == "__main__":

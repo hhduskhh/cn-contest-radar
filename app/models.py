@@ -73,6 +73,9 @@ class CrawlStats:
     items_found: int = 0
     items_new: int = 0
     items_updated: int = 0
+    # 单条解析失败被跳过的条数。只存在内存里 —— 表结构不动，
+    # 但它会经 _mark_source_health(note=...) 把该源标成 degraded。
+    items_failed: int = 0
     editions_written: int = 0
     status: str = "success"
     error: str | None = None
